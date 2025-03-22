@@ -17,6 +17,10 @@
   border-bottom: 5px solid #ffd700;
 }
 
+.red {
+  color: #ff0000;
+}
+
 .panel {
   margin-top: 1rem;
   display: flex;

@@ -1,19 +1,18 @@
 const state = {
   view: {
     squares: document.querySelectorAll(".square"),
-    enemy: document.querySelector(".enemy"),
     timeLeft: document.querySelector("#time-left"),
     score: document.querySelector("#score"),
   },
   values: {
     gameVelocity: 1000,
-    hitPosition: 0,
+    hitPosition: null,
     result: 0,
     curretTime: 60,
   },
   actions: {
-    timerId: setInterval(randomSquare, 1000),
-    countDownTimerId: setInterval(countDown, 1000),
+    timerId: null,
+    countDownTimerId: null,
   },
 };
 
@@ -29,7 +28,7 @@ function countDown() {
 }
 
 function playSound(audioName) {
-  let audio = new Audio(`./src/audios/${audioName}.m4a`);
+  const audio = new Audio(`./src/audios/${audioName}.m4a`);
   audio.volume = 0.2;
   audio.play();
 }
@@ -39,10 +38,10 @@ function randomSquare() {
     square.classList.remove("enemy");
   });
 
-  let randomNumber = Math.floor(Math.random() * 9);
-  let randomSquare = state.view.squares[randomNumber];
+  const randomNumber = Math.floor(Math.random() * state.view.squares.length);
+  const randomSquare = state.view.squares[randomNumber];
   randomSquare.classList.add("enemy");
-  state.values.hitPosition = randomSquare.id;
+  state.values.hitPosition = randomSquare.id; // Atualiza a posição do inimigo
 }
 
 function addListenerHitBox() {
@@ -51,15 +50,21 @@ function addListenerHitBox() {
       if (square.id === state.values.hitPosition) {
         state.values.result++;
         state.view.score.textContent = state.values.result;
-        state.values.hitPosition = null;
+        state.values.hitPosition = null; // Reseta a posição do inimigo
         playSound("hit");
       }
     });
   });
 }
 
+function startGame() {
+  state.actions.timerId = setInterval(randomSquare, state.values.gameVelocity);
+  state.actions.countDownTimerId = setInterval(countDown, 1000);
+}
+
 function initialize() {
   addListenerHitBox();
+  startGame();
 }
 
 initialize();
